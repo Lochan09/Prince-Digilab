@@ -12,10 +12,11 @@ const ORDER_FEATURES = [
 ];
 
 export default function OrderSection() {
-  const [form,          setForm]          = useState(EMPTY_FORM);
-  const [submitting,    setSubmitting]    = useState(false);
-  const [successOpen,   setSuccessOpen]   = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [form,           setForm]           = useState(EMPTY_FORM);
+  const [submitting,     setSubmitting]     = useState(false);
+  const [successOpen,    setSuccessOpen]    = useState(false);
+  const [selectedFiles,  setSelectedFiles]  = useState([]);
+  const [uploadProgress, setUploadProgress] = useState(0); // 0-100
 
   const folderInputRef = useRef(null);
 
@@ -37,26 +38,47 @@ export default function OrderSection() {
     setSelectedFiles(prev => prev.filter((_, i) => i !== idx));
   }
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     setSubmitting(true);
-    try {
-      const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
-      selectedFiles.forEach(f => fd.append('photos', f));
+    setUploadProgress(0);
 
-      const res  = await fetch('/api/orders', { method: 'POST', body: fd });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Unable to submit order.');
+    const fd = new FormData();
+    Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+    selectedFiles.forEach(f => fd.append('photos', f));
 
-      setForm(EMPTY_FORM);
-      setSelectedFiles([]);
-      setSuccessOpen(true);
-    } catch (err) {
-      alert('Error: ' + err.message + '\nPlease call us directly: 0821-4264066');
-    } finally {
+    const xhr = new XMLHttpRequest();
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        setUploadProgress(Math.round((event.loaded / event.total) * 100));
+      }
+    };
+
+    xhr.onload = () => {
       setSubmitting(false);
-    }
+      try {
+        const data = JSON.parse(xhr.responseText);
+        if (xhr.status >= 200 && xhr.status < 300) {
+          setForm(EMPTY_FORM);
+          setSelectedFiles([]);
+          setUploadProgress(0);
+          setSuccessOpen(true);
+        } else {
+          alert('Error: ' + (data.error || 'Unable to submit order.') + '\nPlease call us: 0821-4264066');
+        }
+      } catch {
+        alert('Unexpected error. Please call us: 0821-4264066');
+      }
+    };
+
+    xhr.onerror = () => {
+      setSubmitting(false);
+      alert('Network error. Please call us: 0821-4264066');
+    };
+
+    xhr.open('POST', '/api/orders');
+    xhr.send(fd);
   }
 
   const totalSize = selectedFiles.reduce((s, f) => s + f.size, 0);
@@ -187,10 +209,29 @@ export default function OrderSection() {
               )}
             </div>
 
+            {/* Upload progress bar */}
+            {submitting && selectedFiles.length > 0 && (
+              <div className="upload-progress-wrap">
+                <div className="upload-progress-header">
+                  <span>Uploading {selectedFiles.length} photo{selectedFiles.length > 1 ? 's' : ''}…</span>
+                  <span className="upload-progress-pct">{uploadProgress}%</span>
+                </div>
+                <div className="upload-progress-track">
+                  <div
+                    className="upload-progress-fill"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+                <div className="upload-progress-sub">
+                  {uploadProgress < 100
+                    ? 'Please wait, do not close this page'
+                    : '✅ Upload complete — saving your order…'}
+                </div>
+              </div>
+            )}
+
             <button className="form-submit" type="submit" disabled={submitting}>
-              {submitting
-                ? (selectedFiles.length > 0 ? `Uploading ${selectedFiles.length} photo${selectedFiles.length > 1 ? 's' : ''}…` : 'Sending…')
-                : 'Submit Order Request'}
+              {submitting ? (selectedFiles.length > 0 ? 'Uploading…' : 'Sending…') : 'Submit Order Request'}
             </button>
           </form>
         </div>
