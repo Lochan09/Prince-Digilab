@@ -150,8 +150,11 @@ section.pad{padding:6rem 3rem;}
 .form-group select option{background:#FFFFFF;color:var(--text-dark);}
 .form-group textarea{resize:vertical;min-height:75px;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-.form-submit{width:100%;background:var(--grad-main);color:#FFFFFF;border:none;padding:1rem;font-family:'Raleway',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:opacity 0.25s,box-shadow 0.25s;border-radius:6px;box-shadow:0 4px 18px var(--shadow-strong);margin-top:0.5rem;}
+.form-submit{width:100%;background:var(--grad-main);color:#FFFFFF;border:none;padding:1rem;font-family:'Raleway',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:opacity 0.25s,box-shadow 0.25s;border-radius:6px;box-shadow:0 4px 18px var(--shadow-strong);margin-top:0.5rem;display:flex;align-items:center;justify-content:center;gap:0.55rem;}
 .form-submit:hover{opacity:0.88;box-shadow:0 7px 26px var(--shadow-strong);}
+.form-submit--busy{opacity:0.82;cursor:not-allowed;}
+@keyframes btn-spin{to{transform:rotate(360deg);}}
+.btn-spinner{display:inline-block;width:16px;height:16px;border:2.5px solid rgba(255,255,255,0.35);border-top-color:#fff;border-radius:50%;animation:btn-spin 0.7s linear infinite;flex-shrink:0;}
 
 /* â”€â”€ CONTACT â”€â”€ */
 .contact-section{background:var(--white);}

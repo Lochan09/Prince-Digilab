@@ -257,7 +257,8 @@ export default function OrderSection() {
               </div>
             )}
 
-            <button className="form-submit" type="submit" disabled={submitting}>
+            <button className={`form-submit${submitting ? ' form-submit--busy' : ''}`} type="submit" disabled={submitting}>
+              {submitting && <span className="btn-spinner" />}
               {submitting ? (selectedFiles.length > 0 ? 'Uploading…' : 'Sending…') : 'Submit Order Request'}
             </button>
           </form>
