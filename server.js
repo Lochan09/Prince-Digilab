@@ -18,7 +18,7 @@ const distDir    = path.join(__dirname, 'dist');
 const hasBuiltClient = fsSync.existsSync(path.join(distDir, 'index.html'));
 
 // ── OAuth2 client (used instead of service account key) ───────────────────────
-const REDIRECT_URI = `http://localhost:${port}/auth/callback`;
+const REDIRECT_URI = process.env.OAUTH_REDIRECT_URI || `http://localhost:${port}/auth/callback`;
 
 function makeOAuthClient() {
   return new google.auth.OAuth2(
@@ -28,8 +28,9 @@ function makeOAuthClient() {
   );
 }
 
-// Load the saved refresh token from data/auth.json (written once during setup)
+// Env var takes priority (used in production); file is used locally after /auth/setup
 function loadRefreshToken() {
+  if (process.env.OAUTH_REFRESH_TOKEN) return process.env.OAUTH_REFRESH_TOKEN;
   try {
     const raw = fsSync.readFileSync(authFile, 'utf8');
     return JSON.parse(raw).refresh_token || null;
