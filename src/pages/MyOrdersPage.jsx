@@ -58,7 +58,7 @@ function Row({ label, value }) {
 
 export default function MyOrdersPage({ onBack }) {
   const [localOrders,   setLocalOrders]   = useState([]);
-  const [email,         setEmail]         = useState('');
+  const [phone,         setPhone]         = useState('');
   const [fetching,      setFetching]      = useState(false);
   const [fetchedOrders, setFetchedOrders] = useState(null);
   const [fetchError,    setFetchError]    = useState('');
@@ -67,7 +67,7 @@ export default function MyOrdersPage({ onBack }) {
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
     setLocalOrders(stored);
-    if (stored.length > 0 && stored[0].email) setEmail(stored[0].email);
+    if (stored.length > 0 && stored[0].phone) setPhone(stored[0].phone);
   }, []);
 
   async function handleLookup(e) {
@@ -76,7 +76,7 @@ export default function MyOrdersPage({ onBack }) {
     setFetchError('');
     setFetchedOrders(null);
     try {
-      const res  = await fetch(`/api/orders/lookup?email=${encodeURIComponent(email)}`);
+      const res  = await fetch(`/api/orders/lookup?phone=${encodeURIComponent(phone)}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Lookup failed.');
       setFetchedOrders(data.orders);
@@ -102,10 +102,10 @@ export default function MyOrdersPage({ onBack }) {
 
         <form className="order-lookup-form" onSubmit={handleLookup}>
           <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="Enter your email to look up orders"
+            type="tel"
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+            placeholder="Enter your phone number to look up orders"
             required
           />
           <button type="submit" disabled={fetching}>
