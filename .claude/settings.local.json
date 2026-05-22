@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:princedigilab.netlify.app)",
+      "Bash(powershell -Command \"Get-Content 'c:\\\\Users\\\\dell\\\\Documents\\\\GitHub\\\\Prince-Digilab\\\\script.js' -TotalCount 5\")",
+      "Bash(powershell -Command \"\\(Get-Item 'c:\\\\Users\\\\dell\\\\Documents\\\\GitHub\\\\Prince-Digilab\\\\script.js'\\).Length / 1MB\")",
+      "Bash(powershell -Command \"\\(Get-Item 'c:\\\\Users\\\\dell\\\\Documents\\\\GitHub\\\\Prince-Digilab\\\\dist\\\\assets\\\\index-Ce-x-qEm.js'\\).Length / 1MB\")",
+      "Bash(node extract-images.cjs)",
+      "Bash(grep -oP \"Mysuru[^\\\\\"<]{1,60}\" \"c:/Users/dell/Documents/GitHub/Prince-Digilab/script.js\")"
+    ]
+  }
+}
