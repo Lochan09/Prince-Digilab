@@ -59,6 +59,7 @@ function Row({ label, value }) {
 export default function MyOrdersPage({ onBack }) {
   const [localOrders,   setLocalOrders]   = useState([]);
   const [phone,         setPhone]         = useState('');
+  const [name,          setName]          = useState('');
   const [fetching,      setFetching]      = useState(false);
   const [fetchedOrders, setFetchedOrders] = useState(null);
   const [fetchError,    setFetchError]    = useState('');
@@ -67,7 +68,10 @@ export default function MyOrdersPage({ onBack }) {
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
     setLocalOrders(stored);
-    if (stored.length > 0 && stored[0].phone) setPhone(stored[0].phone);
+    if (stored.length > 0) {
+      if (stored[0].phone) setPhone(stored[0].phone);
+      if (stored[0].name)  setName(stored[0].name);
+    }
   }, []);
 
   async function handleLookup(e) {
@@ -76,7 +80,7 @@ export default function MyOrdersPage({ onBack }) {
     setFetchError('');
     setFetchedOrders(null);
     try {
-      const res  = await fetch(`/api/orders/lookup?phone=${encodeURIComponent(phone)}`);
+      const res  = await fetch(`/api/orders/lookup?phone=${encodeURIComponent(phone)}&name=${encodeURIComponent(name)}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Lookup failed.');
       setFetchedOrders(data.orders);
@@ -102,10 +106,17 @@ export default function MyOrdersPage({ onBack }) {
 
         <form className="order-lookup-form" onSubmit={handleLookup}>
           <input
+            type="text"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Your name (as entered in the order)"
+            required
+          />
+          <input
             type="tel"
             value={phone}
             onChange={e => setPhone(e.target.value)}
-            placeholder="Enter your phone number to look up orders"
+            placeholder="Your phone number"
             required
           />
           <button type="submit" disabled={fetching}>

@@ -252,8 +252,11 @@ app.post('/api/orders', upload.array('photos', 200), async (req, res) => {
 // ── Order lookup by email ──────────────────────────────────────────────────────
 app.get('/api/orders/lookup', async (req, res) => {
   const phone = String(req.query.phone || '').trim().replace(/\D/g, '');
+  const name  = String(req.query.name  || '').trim().toLowerCase();
   if (!phone || phone.length < 7)
     return res.status(400).json({ error: 'Valid phone number required.' });
+  if (!name)
+    return res.status(400).json({ error: 'Name is required.' });
 
   try {
     let raw;
@@ -262,7 +265,11 @@ app.get('/api/orders/lookup', async (req, res) => {
     const orders = raw.trim().split('\n')
       .filter(Boolean)
       .map(line => { try { return JSON.parse(line); } catch { return null; } })
-      .filter(o => o && String(o.phone || '').replace(/\D/g, '').endsWith(phone))
+      .filter(o =>
+        o &&
+        String(o.phone || '').replace(/\D/g, '').endsWith(phone) &&
+        String(o.name  || '').trim().toLowerCase() === name
+      )
       .map(({ id, createdAt, name, phone, productCategory, albumSize, designCode,
                customText, notes, photoCount, driveFolderUrl }) => ({
         id, createdAt, name, phone, productCategory,
