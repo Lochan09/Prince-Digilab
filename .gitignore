@@ -1,0 +1,5 @@
+.env
+credentials/
+data/
+node_modules/
+dist/

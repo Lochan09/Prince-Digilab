@@ -297,16 +297,25 @@ footer{background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple) 100
 .upload-section-label{font-family:'Raleway',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-body);margin-bottom:0.9rem;display:flex;align-items:center;gap:0.5rem;}
 .upload-section-label span{font-weight:400;color:var(--text-muted);text-transform:none;letter-spacing:0;font-size:0.7rem;}
 
-/* Drive Button */
-.drive-btn{display:flex;align-items:center;gap:0.75rem;background:#fff;border:2px solid #e2e8f0;border-radius:10px;padding:0.85rem 1.2rem;cursor:pointer;transition:all 0.22s;width:100%;text-align:left;}
-.drive-btn:hover{border-color:#4285F4;box-shadow:0 4px 16px rgba(66,133,244,0.15);}
-.drive-btn-icon{width:28px;height:28px;flex-shrink:0;}
-.drive-btn-text{display:flex;flex-direction:column;}
-.drive-btn-title{font-family:'Raleway',sans-serif;font-size:0.82rem;font-weight:700;color:#1a1a2e;}
-.drive-btn-sub{font-size:0.65rem;color:#64748b;margin-top:0.1rem;}
-.drive-btn-arrow{margin-left:auto;color:#94a3b8;font-size:1rem;}
+/* Upload pick buttons */
+.upload-btn-row{display:flex;gap:0.6rem;margin-bottom:0.75rem;}
+.upload-pick-btn{display:flex;align-items:center;gap:0.5rem;flex:1;justify-content:center;background:var(--purple-soft);border:2px solid var(--border);border-radius:10px;padding:0.75rem 1rem;cursor:pointer;font-family:'Raleway',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text-dark);transition:all 0.22s;}
+.upload-pick-btn:hover{border-color:var(--purple);background:var(--purple-mid);color:var(--purple);}
+.upload-pick-icon{font-size:1rem;line-height:1;}
 
-/* Steps */
+/* Selected file list */
+.upload-file-list{background:var(--purple-soft);border:1.5px solid var(--border);border-radius:10px;padding:0.75rem 1rem;margin-bottom:0.75rem;}
+.upload-file-summary{font-size:0.7rem;font-weight:700;color:var(--text-body);margin-bottom:0.5rem;display:flex;align-items:center;justify-content:space-between;}
+.upload-clear-btn{background:none;border:none;cursor:pointer;font-size:0.68rem;color:var(--purple);font-weight:700;padding:0;}
+.upload-clear-btn:hover{text-decoration:underline;}
+.upload-file-names{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.25rem;}
+.upload-file-names li{display:flex;align-items:center;justify-content:space-between;font-size:0.68rem;color:var(--text-body);background:#fff;border-radius:6px;padding:0.3rem 0.6rem;}
+.upload-file-names li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:85%;}
+.upload-file-names li button{background:none;border:none;cursor:pointer;color:#94a3b8;font-size:0.9rem;line-height:1;padding:0 0 0 0.4rem;flex-shrink:0;}
+.upload-file-names li button:hover{color:#dc2626;}
+.upload-more{color:var(--text-muted) !important;font-style:italic;background:transparent !important;}
+
+/* Steps (kept for potential reuse) */
 .drive-steps{background:var(--purple-soft);border:1.5px solid var(--border);border-radius:10px;padding:0.9rem 1rem;margin-top:0.75rem;}
 .drive-steps-title{font-size:0.68rem;font-weight:700;color:var(--text-body);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:0.6rem;}
 .drive-step{display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.45rem;font-size:0.72rem;color:var(--text-body);line-height:1.4;}

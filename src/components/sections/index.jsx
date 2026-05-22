@@ -1,0 +1,9 @@
+export { default as Hero             } from './Hero';
+export { default as Ticker           } from './Ticker';
+export { default as Catalog          } from './Catalog';
+export { default as WhySection       } from './WhySection';
+export { default as ServicesSection  } from './ServicesSection';
+export { default as CustomersSection } from './CustomersSection';
+export { default as ReviewStrip      } from './ReviewStrip';
+export { default as OrderSection     } from './OrderSection';
+export { default as ContactSection   } from './ContactSection';

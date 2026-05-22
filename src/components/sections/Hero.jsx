@@ -1,0 +1,45 @@
+import HeroSlider from '../ui/HeroSlider';
+import { HERO_BG, HERO_STATS } from '../../data/constants';
+
+export default function Hero({ onGoToSection }) {
+  return (
+    <section className="hero" id="home">
+      <div className="hero-bg">
+        {HERO_BG.map((src, i) => <img key={i} src={src} alt="" />)}
+      </div>
+      <div className="hero-overlay" />
+      <div className="hero-logo-watermark">
+        <img src="/images/1778236747583_Logo.jpg" alt="" />
+      </div>
+
+      <div className="hero-content">
+        <div className="hero-eyebrow">Mysuru's Premier Photo Lab</div>
+        <h1 className="hero-title">
+          Memories Crafted in <em>Timeless</em> Style
+        </h1>
+        <p className="hero-desc">
+          We create bespoke photo albums, suitcase packages, LED combo boxes and
+          digital keepsakes for weddings and celebrations.
+        </p>
+        <div className="hero-actions">
+          <a className="btn-primary" href="#catalog" onClick={() => onGoToSection('#catalog')}>
+            Browse Catalog
+          </a>
+          <a className="btn-outline" href="#order" onClick={() => onGoToSection('#order')}>
+            Place an Order
+          </a>
+        </div>
+        <div className="hero-stats">
+          {HERO_STATS.map(s => (
+            <div key={s.num}>
+              <div className="stat-num">{s.num}</div>
+              <div className="stat-label">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <HeroSlider />
+    </section>
+  );
+}
