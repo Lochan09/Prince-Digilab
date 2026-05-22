@@ -12,9 +12,12 @@ const ORDER_FEATURES = [
   'Upload your photos directly from your device',
 ];
 
-export default function OrderSection() {
+const STORAGE_KEY = 'pdl_my_orders';
+
+export default function OrderSection({ onViewOrders }) {
   const [form,           setForm]           = useState(EMPTY_FORM);
   const [submitting,     setSubmitting]     = useState(false);
+  const [successOrder,   setSuccessOrder]   = useState(null);
   const [successOpen,    setSuccessOpen]    = useState(false);
   const [selectedFiles,  setSelectedFiles]  = useState([]);
   const [loadedBytes, setLoadedBytes] = useState(0);
@@ -63,9 +66,15 @@ export default function OrderSection() {
       try {
         const data = JSON.parse(xhr.responseText);
         if (xhr.status >= 200 && xhr.status < 300) {
+          const saved = data.order || { id: data.orderId, createdAt: new Date().toISOString(), ...form, photoCount: selectedFiles.length };
+          try {
+            const prev = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            localStorage.setItem(STORAGE_KEY, JSON.stringify([saved, ...prev]));
+          } catch {}
           setForm(EMPTY_FORM);
           setSelectedFiles([]);
           setLoadedBytes(0);
+          setSuccessOrder(saved);
           setSuccessOpen(true);
         } else {
           alert('Error: ' + (data.error || 'Unable to submit order.') + '\nPlease call us: 0821-4264066');
@@ -257,7 +266,12 @@ export default function OrderSection() {
         </div>
       </section>
 
-      <SuccessModal open={successOpen} onClose={() => setSuccessOpen(false)} />
+      <SuccessModal
+        open={successOpen}
+        order={successOrder}
+        onClose={() => setSuccessOpen(false)}
+        onViewOrders={() => { setSuccessOpen(false); onViewOrders?.(); }}
+      />
     </>
   );
 }

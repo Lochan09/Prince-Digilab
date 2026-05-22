@@ -228,12 +228,54 @@ app.post('/api/orders', upload.array('photos', 200), async (req, res) => {
       );
     }
 
-    res.status(201).json({ ok: true, message: 'Order received successfully.', orderId: order.id });
+    res.status(201).json({
+      ok: true,
+      message: 'Order received successfully.',
+      orderId: order.id,
+      order: {
+        id: order.id, createdAt: order.createdAt,
+        name: order.name, phone: order.phone, email: order.email,
+        productCategory: order.productCategory, albumSize: order.albumSize,
+        designCode: order.designCode, customText: order.customText,
+        notes: order.notes, photoCount: order.photoCount,
+        driveFolderUrl: driveFolderUrl || null,
+      },
+    });
   } catch (err) {
     console.error('Order processing failed:', err);
     res.status(500).json({ error: 'Unable to save the order right now. Please call us directly.' });
   } finally {
     tempFiles.forEach(f => fs.unlink(f.path).catch(() => {}));
+  }
+});
+
+// ── Order lookup by email ──────────────────────────────────────────────────────
+app.get('/api/orders/lookup', async (req, res) => {
+  const email = String(req.query.email || '').trim().toLowerCase();
+  if (!email || !email.includes('@'))
+    return res.status(400).json({ error: 'Valid email required.' });
+
+  try {
+    let raw;
+    try { raw = await fs.readFile(ordersFile, 'utf8'); } catch { return res.json({ orders: [] }); }
+
+    const orders = raw.trim().split('\n')
+      .filter(Boolean)
+      .map(line => { try { return JSON.parse(line); } catch { return null; } })
+      .filter(o => o && String(o.email || '').trim().toLowerCase() === email)
+      .map(({ id, createdAt, name, phone, productCategory, albumSize, designCode,
+               customText, notes, photoCount, driveFolderUrl }) => ({
+        id, createdAt, name, phone, productCategory,
+        albumSize: albumSize || '', designCode: designCode || '',
+        customText: customText || '', notes: notes || '',
+        photoCount: photoCount || 0, driveFolderUrl: driveFolderUrl || null,
+      }))
+      .reverse(); // newest first
+
+    res.json({ orders });
+  } catch (err) {
+    console.error('Order lookup error:', err);
+    res.status(500).json({ error: 'Unable to look up orders.' });
   }
 });
 

@@ -12,7 +12,7 @@ import {
 
 import { Footer } from '../components/layout';
 
-export default function MainPage({ onOpenLightbox, onGoToSection }) {
+export default function MainPage({ onOpenLightbox, onGoToSection, onViewOrders }) {
   return (
     <main>
       <Hero            onGoToSection={onGoToSection} />
@@ -21,7 +21,7 @@ export default function MainPage({ onOpenLightbox, onGoToSection }) {
       <WhySection />
       <CustomersSection />
       <ServicesSection />
-      <OrderSection />
+      <OrderSection    onViewOrders={onViewOrders} />
       <ContactSection />
       <ReviewStrip />
       <Footer />
