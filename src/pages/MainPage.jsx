@@ -19,11 +19,11 @@ export default function MainPage({ onOpenLightbox, onGoToSection }) {
       <Ticker />
       <Catalog         onOpenLightbox={onOpenLightbox} />
       <WhySection />
-      <ServicesSection />
       <CustomersSection />
-      <ReviewStrip />
+      <ServicesSection />
       <OrderSection />
       <ContactSection />
+      <ReviewStrip />
       <Footer />
     </main>
   );

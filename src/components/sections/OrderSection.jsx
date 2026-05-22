@@ -12,35 +12,24 @@ const ORDER_FEATURES = [
 ];
 
 export default function OrderSection() {
-  const [form,         setForm]         = useState(EMPTY_FORM);
-  const [submitting,   setSubmitting]   = useState(false);
-  const [successOpen,  setSuccessOpen]  = useState(false);
-  const [driveStatus,  setDriveStatus]  = useState(''); // '' | 'ok' | 'warn'
+  const [form,          setForm]          = useState(EMPTY_FORM);
+  const [submitting,    setSubmitting]    = useState(false);
+  const [successOpen,   setSuccessOpen]   = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
-  const fileInputRef   = useRef(null);
   const folderInputRef = useRef(null);
 
   function field(name) {
     return e => setForm(f => ({ ...f, [name]: e.target.value }));
   }
 
-  function checkDrive(val) {
-    const v = val.trim();
-    if (v.includes('drive.google.com')) setDriveStatus('ok');
-    else if (v.length > 10)            setDriveStatus('warn');
-    else                                setDriveStatus('');
-  }
-
   function handleFileChange(e) {
     const incoming = Array.from(e.target.files);
     if (!incoming.length) return;
-    // Merge with existing selection, deduplicating by name+size
     setSelectedFiles(prev => {
       const existing = new Set(prev.map(f => f.name + f.size));
       return [...prev, ...incoming.filter(f => !existing.has(f.name + f.size))];
     });
-    // Reset input so the same folder can be re-selected if needed
     e.target.value = '';
   }
 
@@ -62,7 +51,6 @@ export default function OrderSection() {
 
       setForm(EMPTY_FORM);
       setSelectedFiles([]);
-      setDriveStatus('');
       setSuccessOpen(true);
     } catch (err) {
       alert('Error: ' + err.message + '\nPlease call us directly: 0821-4264066');
@@ -159,15 +147,6 @@ export default function OrderSection() {
                 Photos <span>(optional — uploaded directly to our Drive)</span>
               </div>
 
-              {/* Hidden inputs */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                accept="image/*,video/*"
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-              />
               <input
                 ref={folderInputRef}
                 type="file"
@@ -178,19 +157,13 @@ export default function OrderSection() {
                 style={{ display: 'none' }}
               />
 
-              {/* Upload buttons */}
               <div className="upload-btn-row">
-                <button type="button" className="upload-pick-btn" onClick={() => fileInputRef.current?.click()}>
-                  <span className="upload-pick-icon">🖼️</span>
-                  <span>Select Photos</span>
-                </button>
                 <button type="button" className="upload-pick-btn" onClick={() => folderInputRef.current?.click()}>
                   <span className="upload-pick-icon">📁</span>
                   <span>Select Folder</span>
                 </button>
               </div>
 
-              {/* Selected file list */}
               {selectedFiles.length > 0 && (
                 <div className="upload-file-list">
                   <div className="upload-file-summary">
@@ -212,29 +185,6 @@ export default function OrderSection() {
                   </ul>
                 </div>
               )}
-
-              {/* Drive link fallback */}
-              <div className="drive-link-wrap">
-                <label>Or paste a Google Drive link</label>
-                <div className="drive-link-input-row">
-                  <input
-                    value={form.driveUrl}
-                    onChange={e => { field('driveUrl')(e); checkDrive(e.target.value); }}
-                    type="url"
-                    placeholder="https://drive.google.com/drive/folders/..."
-                  />
-                </div>
-                {driveStatus === 'ok' && (
-                  <div className="drive-validated show ok">
-                    ✅ Google Drive link detected — we'll be able to view your photos!
-                  </div>
-                )}
-                {driveStatus === 'warn' && (
-                  <div className="drive-validated show warn">
-                    ⚠️ This doesn't look like a Google Drive link. Please double-check.
-                  </div>
-                )}
-              </div>
             </div>
 
             <button className="form-submit" type="submit" disabled={submitting}>

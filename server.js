@@ -211,7 +211,7 @@ app.post('/api/orders', upload.array('photos', 200), async (req, res) => {
     // Upload to owner's Drive if files were attached and Drive is authorised
     let driveFolderUrl = null;
     if (tempFiles.length > 0 && process.env.DRIVE_PARENT_FOLDER_ID && loadRefreshToken()) {
-      const folderName = `${order.id} — ${order.name}`;
+      const folderName = `${order.id} — ${order.name} — ${order.phone}`;
       driveFolderUrl = await uploadFilesToDrive(tempFiles, folderName);
       order.driveFolderUrl = driveFolderUrl;
     }
