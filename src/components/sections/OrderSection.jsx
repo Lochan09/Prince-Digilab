@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { flushSync } from 'react-dom';
 import SuccessModal from '../ui/SuccessModal';
 import { EMPTY_FORM, ALBUM_SIZES, OCCASIONS, PRODUCT_CATEGORIES } from '../../data/constants';
 
@@ -51,12 +52,14 @@ export default function OrderSection() {
 
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {
-        setUploadProgress(Math.round((event.loaded / event.total) * 100));
+        flushSync(() => {
+          setUploadProgress(Math.round((event.loaded / event.total) * 100));
+        });
       }
     };
 
     xhr.onload = () => {
-      setSubmitting(false);
+      flushSync(() => setSubmitting(false));
       try {
         const data = JSON.parse(xhr.responseText);
         if (xhr.status >= 200 && xhr.status < 300) {
