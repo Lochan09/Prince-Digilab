@@ -10,8 +10,8 @@ export const HERO_BG = [
 ];
 
 export const HERO_STATS = [
-  { num: '1000+', label: 'Happy Clients' },
-  { num: '10+',   label: 'Years Experience' },
+  { num: '5000+', label: 'Happy Clients' },
+  { num: '15+',   label: 'Years Experience' },
   { num: '100%',  label: 'Custom Made' },
 ];
 

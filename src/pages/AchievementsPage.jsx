@@ -1,8 +1,8 @@
 const ACHIEVEMENTS = [
-  { icon: '🏆', title: '1000+ Happy Clients',      desc: 'Trusted by families across Mysuru and Karnataka for their most precious memories.' },
+  { icon: '🏆', title: '5000+ Happy Clients',      desc: 'Trusted by families across Mysuru and Karnataka for their most precious memories.' },
   { icon: '⭐', title: '5-Star Google Rating',      desc: 'Consistently rated 5 stars by our clients on Google for quality and service.' },
   { icon: '📐', title: '72+ Unique Designs',        desc: 'Our NPL Pad Album catalog features over 72 exclusive designs crafted in-house.' },
-  { icon: '🎖️', title: '10+ Years of Excellence',   desc: 'A decade of delivering premium photo products with zero compromise on quality.' },
+  { icon: '🎖️', title: '15+ Years of Excellence',   desc: 'Over 15 years of delivering premium photo products with zero compromise on quality.' },
   { icon: '🌟', title: 'Featured Lab in Mysuru',    desc: 'Recognised as one of the top photo labs in Mysuru by local photographers and studios.' },
   { icon: '🔬', title: '4K Printing Technology',    desc: 'State-of-the-art 4K quality printing with 7-colour ink systems for vibrant outputs.' },
 ];
