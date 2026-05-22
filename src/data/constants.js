@@ -10,7 +10,6 @@ export const HERO_BG = [
 ];
 
 export const HERO_STATS = [
-  { num: '72+',   label: 'Album Designs' },
   { num: '1000+', label: 'Happy Clients' },
   { num: '10+',   label: 'Years Experience' },
   { num: '100%',  label: 'Custom Made' },
@@ -24,12 +23,12 @@ export const TICKER_WORDS = [
 
 export const EMPTY_FORM = {
   name: '', phone: '', email: '', productCategory: '',
-  albumSize: '', occasion: '', designCode: '', customText: '', notes: '', driveUrl: '',
+  albumSize: '', designCode: '', customText: '', notes: '', driveUrl: '',
 };
 
 export const ALBUM_SIZES = [
-  '6 X 9', '8 X 24', '9 X 24', '12 X 18', '10 X 26',
-  '12 X 24', '12 X 30', '12 X 32', '12 X 36', '15 X 24', '16 X 24', '18 X 24',
+  '6 X 9 (Mini Book)', '8 X 24', '9 X 24', '12 X 18', '10 X 26',
+  '12 X 24', '12 X 30 (Preferred)', '12 X 32', '12 X 36 (Preferred)', '15 X 24', '16 X 24', '18 X 24',
 ];
 
 export const OCCASIONS = [

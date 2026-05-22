@@ -9,15 +9,15 @@ export default function FloatingButtons({ onOrderClick }) {
     <>
       {/* Bottom-right: Review + Order */}
       <div className="fab-group">
-        <a className="review-fab" href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer">
-          <div className="review-fab-pulse" />
-          <GoogleLogoSVG />
-          Review Us
-        </a>
         <a className="order-fab" href="#order" onClick={onOrderClick}>
           <div className="order-fab-pulse" />
           <OrderBagSVG />
           Order Now
+        </a>
+        <a className="review-fab" href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer">
+          <div className="review-fab-pulse" />
+          <GoogleLogoSVG />
+          Review Us
         </a>
       </div>
 

@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { flushSync } from 'react-dom';
 import SuccessModal from '../ui/SuccessModal';
-import { EMPTY_FORM, ALBUM_SIZES, OCCASIONS, PRODUCT_CATEGORIES } from '../../data/constants';
+import { EMPTY_FORM, ALBUM_SIZES, PRODUCT_CATEGORIES } from '../../data/constants';
 
 const ORDER_FEATURES = [
   'Over 72 exclusive NPL pad album designs',
@@ -158,14 +158,6 @@ export default function OrderSection() {
                   {ALBUM_SIZES.map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
-            </div>
-
-            <div className="form-group">
-              <label>Occasion</label>
-              <select value={form.occasion} onChange={field('occasion')}>
-                <option value="">Select Occasion</option>
-                {OCCASIONS.map(o => <option key={o}>{o}</option>)}
-              </select>
             </div>
 
             <div className="form-group">
