@@ -17,7 +17,7 @@ export default function OrderSection() {
   const [submitting,     setSubmitting]     = useState(false);
   const [successOpen,    setSuccessOpen]    = useState(false);
   const [selectedFiles,  setSelectedFiles]  = useState([]);
-  const [uploadProgress, setUploadProgress] = useState(0); // 0-100
+  const [loadedBytes, setLoadedBytes] = useState(0);
 
   const folderInputRef = useRef(null);
 
@@ -42,7 +42,7 @@ export default function OrderSection() {
   function handleSubmit(e) {
     e.preventDefault();
     setSubmitting(true);
-    setUploadProgress(0);
+    setLoadedBytes(0);
 
     const fd = new FormData();
     Object.entries(form).forEach(([k, v]) => fd.append(k, v));
@@ -53,7 +53,7 @@ export default function OrderSection() {
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {
         flushSync(() => {
-          setUploadProgress(Math.round((event.loaded / event.total) * 100));
+          setLoadedBytes(event.loaded);
         });
       }
     };
@@ -65,7 +65,7 @@ export default function OrderSection() {
         if (xhr.status >= 200 && xhr.status < 300) {
           setForm(EMPTY_FORM);
           setSelectedFiles([]);
-          setUploadProgress(0);
+          setLoadedBytes(0);
           setSuccessOpen(true);
         } else {
           alert('Error: ' + (data.error || 'Unable to submit order.') + '\nPlease call us: 0821-4264066');
@@ -86,6 +86,18 @@ export default function OrderSection() {
 
   const totalSize = selectedFiles.reduce((s, f) => s + f.size, 0);
   const sizeMB    = (totalSize / 1024 / 1024).toFixed(1);
+
+  function fileProgresses(files, loaded) {
+    let remaining = loaded;
+    return files.map(f => {
+      if (remaining <= 0) return 0;
+      if (remaining >= f.size) { remaining -= f.size; return 100; }
+      const pct = Math.round((remaining / f.size) * 100);
+      remaining = 0;
+      return pct;
+    });
+  }
+  const perFilePct = submitting ? fileProgresses(selectedFiles, loadedBytes) : [];
 
   return (
     <>
@@ -212,21 +224,33 @@ export default function OrderSection() {
               )}
             </div>
 
-            {/* Upload progress bar */}
+            {/* Per-file upload progress */}
             {submitting && selectedFiles.length > 0 && (
               <div className="upload-progress-wrap">
                 <div className="upload-progress-header">
-                  <span>Uploading {selectedFiles.length} photo{selectedFiles.length > 1 ? 's' : ''}…</span>
-                  <span className="upload-progress-pct">{uploadProgress}%</span>
+                  <span>Uploading {selectedFiles.length} file{selectedFiles.length > 1 ? 's' : ''}…</span>
+                  <span className="upload-progress-pct">
+                    {totalSize > 0 ? Math.round((loadedBytes / totalSize) * 100) : 0}%
+                  </span>
                 </div>
-                <div className="upload-progress-track">
-                  <div
-                    className="upload-progress-fill"
-                    style={{ width: `${uploadProgress}%` }}
-                  />
+                <div className="upload-progress-file-list">
+                  {selectedFiles.map((f, i) => (
+                    <div key={i} className="upload-progress-item">
+                      <div className="upload-progress-name">
+                        <span className="upload-progress-fname">{f.name}</span>
+                        <span>{perFilePct[i] === 100 ? '✓' : `${perFilePct[i] ?? 0}%`}</span>
+                      </div>
+                      <div className="upload-progress-bar-bg">
+                        <div
+                          className="upload-progress-bar"
+                          style={{ width: `${perFilePct[i] ?? 0}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
                 <div className="upload-progress-sub">
-                  {uploadProgress < 100
+                  {loadedBytes < totalSize
                     ? 'Please wait, do not close this page'
                     : '✅ Upload complete — saving your order…'}
                 </div>
