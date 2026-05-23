@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-
-const STORAGE_KEY = 'pdl_my_orders';
+import { useAuth } from '../context/AuthContext';
 
 function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('en-IN', {
@@ -9,7 +8,15 @@ function fmtDate(iso) {
   });
 }
 
-function OrderCard({ order, index, expanded, onToggle }) {
+function Row({ label, value }) {
+  return (
+    <div className="order-detail-row">
+      <span>{label}</span><span>{value}</span>
+    </div>
+  );
+}
+
+function OrderCard({ order, expanded, onToggle }) {
   return (
     <div className={`order-card${expanded ? ' expanded' : ''}`}>
       <button className="order-card-header" onClick={onToggle}>
@@ -22,11 +29,8 @@ function OrderCard({ order, index, expanded, onToggle }) {
           <span className="order-card-chevron">{expanded ? '▲' : '▼'}</span>
         </div>
       </button>
-
       {expanded && (
         <div className="order-card-details">
-          {order.name        && <Row label="Name"        value={order.name} />}
-          {order.phone       && <Row label="Phone"       value={order.phone} />}
           {order.albumSize   && <Row label="Album Size"  value={order.albumSize} />}
           {order.designCode  && <Row label="Design Code" value={order.designCode} />}
           {order.customText  && <Row label="Custom Text" value={order.customText} />}
@@ -48,46 +52,23 @@ function OrderCard({ order, index, expanded, onToggle }) {
   );
 }
 
-function Row({ label, value }) {
-  return (
-    <div className="order-detail-row">
-      <span>{label}</span><span>{value}</span>
-    </div>
-  );
-}
-
 export default function MyOrdersPage({ onBack }) {
-  const [localOrders,   setLocalOrders]   = useState([]);
-  const [phone,         setPhone]         = useState('');
-  const [fetching,      setFetching]      = useState(false);
-  const [fetchedOrders, setFetchedOrders] = useState(null);
-  const [fetchError,    setFetchError]    = useState('');
-  const [expanded,      setExpanded]      = useState(0);
+  const { user, signIn, loading } = useAuth();
+  const [orders,   setOrders]   = useState([]);
+  const [fetching, setFetching] = useState(false);
+  const [error,    setError]    = useState('');
+  const [expanded, setExpanded] = useState(0);
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    setLocalOrders(stored);
-    if (stored.length > 0 && stored[0].phone) setPhone(stored[0].phone);
-  }, []);
-
-  async function handleLookup(e) {
-    e.preventDefault();
+    if (!user) return;
     setFetching(true);
-    setFetchError('');
-    setFetchedOrders(null);
-    try {
-      const res  = await fetch(`/api/orders/lookup?phone=${encodeURIComponent(phone)}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Lookup failed.');
-      setFetchedOrders(data.orders);
-    } catch (err) {
-      setFetchError(err.message);
-    } finally {
-      setFetching(false);
-    }
-  }
-
-  const orders = fetchedOrders ?? localOrders;
+    setError('');
+    fetch(`/api/orders/lookup?email=${encodeURIComponent(user.email)}`)
+      .then(r => r.json())
+      .then(d => { if (d.orders) setOrders(d.orders); else setError(d.error || 'Failed to load orders.'); })
+      .catch(() => setError('Network error. Please try again.'))
+      .finally(() => setFetching(false));
+  }, [user]);
 
   return (
     <div className="spa-page active" id="page-myorders">
@@ -100,43 +81,48 @@ export default function MyOrdersPage({ onBack }) {
         <div className="sec-label" style={{ marginTop: '1.5rem' }}>Order History</div>
         <h1 className="sec-title">My <em>Orders</em></h1>
 
-        <form className="order-lookup-form" onSubmit={handleLookup}>
-          <input
-            type="tel"
-            value={phone}
-            onChange={e => setPhone(e.target.value)}
-            placeholder="Enter your phone number to look up orders"
-            required
-          />
-          <button type="submit" disabled={fetching}>
-            {fetching ? 'Looking up…' : 'Look Up'}
-          </button>
-        </form>
-        {fetchError && <div className="order-lookup-error">{fetchError}</div>}
+        {loading && <div className="order-empty">Loading…</div>}
 
-        {orders.length === 0 ? (
-          <div className="order-empty">
-            {fetchedOrders !== null
-              ? 'No orders found for this email.'
-              : 'No orders placed yet from this device. Use Look Up to search by email.'}
-          </div>
-        ) : (
-          <div className="order-history-list">
-            {orders.map((o, i) => (
-              <OrderCard
-                key={o.id || i}
-                order={o}
-                index={i}
-                expanded={expanded === i}
-                onToggle={() => setExpanded(expanded === i ? null : i)}
-              />
-            ))}
+        {!loading && !user && (
+          <div className="myorders-signin-prompt">
+            <p>Sign in with your Google account to view your orders.</p>
+            <button className="btn-primary" onClick={signIn}
+              style={{ border: 'none', cursor: 'pointer', marginTop: '1rem' }}>
+              Sign In with Google
+            </button>
           </div>
         )}
 
-        <p className="order-helpline">
-          For order queries call us: <strong>0821-4264066</strong>
-        </p>
+        {!loading && user && (
+          <>
+            <div className="myorders-user-row">
+              <img src={user.photoURL} referrerPolicy="no-referrer" className="nav-avatar" alt="" />
+              <span>Orders for <strong>{user.email}</strong></span>
+            </div>
+
+            {fetching && <div className="order-empty">Loading your orders…</div>}
+            {error    && <div className="order-lookup-error">{error}</div>}
+
+            {!fetching && !error && orders.length === 0 && (
+              <div className="order-empty">No orders found. Place your first order!</div>
+            )}
+
+            {!fetching && orders.length > 0 && (
+              <div className="order-history-list">
+                {orders.map((o, i) => (
+                  <OrderCard
+                    key={o.id || i}
+                    order={o}
+                    expanded={expanded === i}
+                    onToggle={() => setExpanded(expanded === i ? null : i)}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        <p className="order-helpline">For order queries call us: <strong>0821-4264066</strong></p>
       </div>
     </div>
   );

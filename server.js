@@ -249,11 +249,11 @@ app.post('/api/orders', upload.array('photos', 200), async (req, res) => {
   }
 });
 
-// ── Order lookup by email ──────────────────────────────────────────────────────
+// ── Order lookup by signed-in user's email ────────────────────────────────────
 app.get('/api/orders/lookup', async (req, res) => {
-  const phone = String(req.query.phone || '').trim().replace(/\D/g, '');
-  if (!phone || phone.length < 7)
-    return res.status(400).json({ error: 'Valid phone number required.' });
+  const email = String(req.query.email || '').trim().toLowerCase();
+  if (!email || !email.includes('@'))
+    return res.status(400).json({ error: 'Valid email required.' });
 
   try {
     let raw;
@@ -262,7 +262,7 @@ app.get('/api/orders/lookup', async (req, res) => {
     const orders = raw.trim().split('\n')
       .filter(Boolean)
       .map(line => { try { return JSON.parse(line); } catch { return null; } })
-      .filter(o => o && String(o.phone || '').replace(/\D/g, '').endsWith(phone))
+      .filter(o => o && String(o.email || '').trim().toLowerCase() === email)
       .map(({ id, createdAt, name, phone, productCategory, albumSize, designCode,
                customText, notes, photoCount, driveFolderUrl }) => ({
         id, createdAt, name, phone, productCategory,
@@ -270,12 +270,46 @@ app.get('/api/orders/lookup', async (req, res) => {
         customText: customText || '', notes: notes || '',
         photoCount: photoCount || 0, driveFolderUrl: driveFolderUrl || null,
       }))
-      .reverse(); // newest first
+      .reverse();
 
     res.json({ orders });
   } catch (err) {
     console.error('Order lookup error:', err);
     res.status(500).json({ error: 'Unable to look up orders.' });
+  }
+});
+
+// ── Admin: all orders (owner only, verified via Firebase ID token) ─────────────
+app.get('/api/orders/admin', async (req, res) => {
+  const token = String(req.headers.authorization || '').replace('Bearer ', '').trim();
+  if (!token) return res.status(401).json({ error: 'Unauthorized.' });
+
+  try {
+    // Verify token with Firebase REST API
+    const fbRes = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${process.env.VITE_FIREBASE_API_KEY}`,
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken: token }) }
+    );
+    const fbData = await fbRes.json();
+    if (!fbRes.ok || !fbData.users?.[0]) return res.status(401).json({ error: 'Invalid token.' });
+
+    const callerEmail = String(fbData.users[0].email || '').toLowerCase();
+    if (callerEmail !== String(process.env.OWNER_EMAIL || '').toLowerCase())
+      return res.status(403).json({ error: 'Access denied.' });
+
+    let raw;
+    try { raw = await fs.readFile(ordersFile, 'utf8'); } catch { return res.json({ orders: [], total: 0 }); }
+
+    const orders = raw.trim().split('\n')
+      .filter(Boolean)
+      .map(line => { try { return JSON.parse(line); } catch { return null; } })
+      .filter(Boolean)
+      .reverse();
+
+    res.json({ orders, total: orders.length });
+  } catch (err) {
+    console.error('Admin orders error:', err);
+    res.status(500).json({ error: 'Server error.' });
   }
 });
 

@@ -60,7 +60,10 @@ export default function Nav({ onGoToPage, onGoToSection }) {
             <li><a href="#about"        onClick={() => handlePage('about')}>About Us</a></li>
             <li><a href="#achievements" onClick={() => handlePage('achievements')}>Achievements</a></li>
             <li><a href="#faq"          onClick={() => handlePage('faq')}>FAQ</a></li>
-            <li><a href="#myorders"     onClick={() => handlePage('myorders')}>My Orders</a></li>
+            {user && <li><a href="#myorders" onClick={() => handlePage('myorders')}>My Orders</a></li>}
+            {user?.email === 'princedigilab@gmail.com' && (
+              <li><a href="#admin" className="nav-admin-link" onClick={() => handlePage('admin')}>Monitor Orders</a></li>
+            )}
           </ul>
         </li>
 

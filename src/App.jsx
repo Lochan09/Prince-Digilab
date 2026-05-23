@@ -4,7 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { Nav }                                        from './components/layout';
 import { Lightbox }                                   from './components/ui';
 import FloatingButtons                                from './components/FloatingButtons';
-import { MainPage, AboutPage, AchievementsPage, FaqPage, MyOrdersPage } from './pages';
+import { MainPage, AboutPage, AchievementsPage, FaqPage, MyOrdersPage, AdminOrdersPage } from './pages';
 import { CATALOG }                                    from './data/catalog';
 
 export default function App() {
@@ -41,6 +41,7 @@ export default function App() {
       {activePage === 'achievements' && <AchievementsPage onBack={() => goToSection(null)} />}
       {activePage === 'faq'          && <FaqPage          onBack={() => goToSection(null)} />}
       {activePage === 'myorders'     && <MyOrdersPage     onBack={() => goToSection(null)} />}
+      {activePage === 'admin'        && <AdminOrdersPage  onBack={() => goToSection(null)} />}
 
       {!activePage && (
         <MainPage
