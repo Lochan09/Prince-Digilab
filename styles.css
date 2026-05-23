@@ -795,3 +795,22 @@ footer{background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple) 100
 .faq-a{max-height:0;overflow:hidden;transition:max-height 0.35s ease,padding 0.25s;padding:0 1.4rem;font-size:0.88rem;color:var(--text-body);line-height:1.8;}
 .faq-a.open{max-height:200px;padding:0 1.4rem 1.2rem;}
 
+
+/* ── AUTH / SIGN-IN ── */
+.nav-signin-btn{display:flex;align-items:center;gap:0.35rem;background:none;border:2px solid var(--purple);color:var(--purple);border-radius:20px;padding:0.45rem 1rem;font-family:'Raleway',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;transition:background 0.2s,color 0.2s;white-space:nowrap;}
+.nav-signin-btn:hover{background:var(--purple);color:#fff;}
+.nav-signin-btn svg{width:15px;height:15px;flex-shrink:0;}
+.nav-user-wrap{display:flex;align-items:center;gap:0.5rem;}
+.nav-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--purple);flex-shrink:0;}
+.nav-user-name{font-size:0.82rem;font-weight:700;color:var(--text-dark);white-space:nowrap;}
+.nav-signout-btn{background:none;border:none;font-size:0.75rem;color:var(--text-muted);cursor:pointer;padding:0;white-space:nowrap;}
+.nav-signout-btn:hover{color:var(--purple);}
+.form-submit--signin{background:none !important;border:2px solid var(--purple) !important;color:var(--purple) !important;box-shadow:none !important;}
+.form-submit--signin svg{width:16px;height:16px;flex-shrink:0;}
+.mob-signin-li,.mob-signout-li{display:none;}
+@media(max-width:768px){
+  .nav-signin-btn,.nav-user-wrap{display:none;}
+  .mob-signin-li,.mob-signout-li{display:block;}
+  .mob-signin-li button,.mob-signout-li button{display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.95rem 1.5rem;background:none;border:none;font-family:'Raleway',sans-serif;font-size:0.88rem;font-weight:700;color:var(--purple);cursor:pointer;text-align:left;}
+  .mob-signin-li svg{width:16px;height:16px;flex-shrink:0;}
+}

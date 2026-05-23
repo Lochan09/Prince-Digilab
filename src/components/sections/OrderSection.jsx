@@ -1,7 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { flushSync } from 'react-dom';
 import SuccessModal from '../ui/SuccessModal';
 import { EMPTY_FORM, ALBUM_SIZES, PRODUCT_CATEGORIES } from '../../data/constants';
+import { useAuth } from '../../context/AuthContext';
+import { GoogleLogoSVG } from '../icons';
 
 const ORDER_FEATURES = [
   'Over 72 exclusive NPL pad album designs',
@@ -22,7 +24,19 @@ export default function OrderSection({ onViewOrders }) {
   const [selectedFiles,  setSelectedFiles]  = useState([]);
   const [loadedBytes, setLoadedBytes] = useState(0);
 
+  const { user, signIn } = useAuth();
   const folderInputRef = useRef(null);
+
+  // Auto-fill name & email from Google profile
+  useEffect(() => {
+    if (user) {
+      setForm(f => ({
+        ...f,
+        name:  f.name  || user.displayName || '',
+        email: f.email || user.email       || '',
+      }));
+    }
+  }, [user]);
 
   function field(name) {
     return e => setForm(f => ({ ...f, [name]: e.target.value }));
@@ -258,10 +272,16 @@ export default function OrderSection({ onViewOrders }) {
               </div>
             )}
 
-            <button className={`form-submit${submitting ? ' form-submit--busy' : ''}`} type="submit" disabled={submitting}>
-              {submitting && <span className="btn-spinner" />}
-              {submitting ? (selectedFiles.length > 0 ? 'Uploading…' : 'Sending…') : 'Submit Order Request'}
-            </button>
+            {user ? (
+              <button className={`form-submit${submitting ? ' form-submit--busy' : ''}`} type="submit" disabled={submitting}>
+                {submitting && <span className="btn-spinner" />}
+                {submitting ? (selectedFiles.length > 0 ? 'Uploading…' : 'Sending…') : 'Submit Order Request'}
+              </button>
+            ) : (
+              <button className="form-submit form-submit--signin" type="button" onClick={signIn}>
+                <GoogleLogoSVG /> Sign In to Place Order
+              </button>
+            )}
           </form>
         </div>
       </section>

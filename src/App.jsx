@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AuthProvider } from './context/AuthContext';
 
 import { Nav }                                        from './components/layout';
 import { Lightbox }                                   from './components/ui';
@@ -31,6 +32,7 @@ export default function App() {
   }
 
   return (
+    <AuthProvider>
     <div className="app-shell">
 
       <Nav onGoToPage={goToPage} onGoToSection={goToSection} />
@@ -52,5 +54,6 @@ export default function App() {
       <FloatingButtons onOrderClick={() => goToSection('#order')} />
 
     </div>
+    </AuthProvider>
   );
 }

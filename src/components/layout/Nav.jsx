@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { ChevronDownSVG } from '../icons';
+import { ChevronDownSVG, GoogleLogoSVG } from '../icons';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Nav({ onGoToPage, onGoToSection }) {
   const [navOpen,  setNavOpen]  = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const { user, loading, signIn, signOut } = useAuth();
 
   // Close "More" dropdown when clicking outside
   useEffect(() => {
@@ -63,7 +65,37 @@ export default function Nav({ onGoToPage, onGoToSection }) {
         </li>
 
         <li><a href="#contact" onClick={() => handleSection('#contact')}>Contact</a></li>
+
+        {/* Mobile-only auth items */}
+        {!loading && !user && (
+          <li className="mob-signin-li">
+            <button onClick={() => { setNavOpen(false); signIn(); }}>
+              <GoogleLogoSVG /> Sign In with Google
+            </button>
+          </li>
+        )}
+        {!loading && user && (
+          <li className="mob-signout-li">
+            <button onClick={() => { setNavOpen(false); signOut(); }}>
+              Sign Out ({user.displayName?.split(' ')[0]})
+            </button>
+          </li>
+        )}
       </ul>
+
+      {/* Desktop sign-in / user area */}
+      {!loading && !user && (
+        <button className="nav-signin-btn" onClick={signIn}>
+          <GoogleLogoSVG /> Sign In
+        </button>
+      )}
+      {!loading && user && (
+        <div className="nav-user-wrap">
+          <img src={user.photoURL} referrerPolicy="no-referrer" className="nav-avatar" alt={user.displayName} />
+          <span className="nav-user-name">{user.displayName?.split(' ')[0]}</span>
+          <button className="nav-signout-btn" onClick={signOut}>Sign Out</button>
+        </div>
+      )}
 
       <a className="nav-btn" href="#order" onClick={() => handleSection('#order')}>
         Order Now
