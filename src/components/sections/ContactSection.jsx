@@ -57,7 +57,7 @@ export default function ContactSection() {
           </div>
 
           <div className="social-links">
-            <a className="social-link instagram" href="https://instagram.com/newprincedigilab" target="_blank" rel="noopener noreferrer" title="Instagram">
+            <a className="social-link instagram" href="https://www.instagram.com/prince_digilabmys" target="_blank" rel="noopener noreferrer" title="Instagram">
               <InstagramSVG />
             </a>
             <a className="social-link facebook"  href="https://facebook.com/newprincedigilab"  target="_blank" rel="noopener noreferrer" title="Facebook">
