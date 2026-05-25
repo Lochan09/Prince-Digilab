@@ -5,9 +5,9 @@ import {
   PieChart, Pie, Cell, Legend, LineChart, Line, CartesianGrid,
 } from 'recharts';
 
-const PURPLE  = '#6c3fc8';
-const SOFT    = '#a78bfa';
-const COLORS  = ['#6c3fc8','#a78bfa','#c4b5fd','#7c3aed','#4c1d95','#ddd6fe','#8b5cf6','#5b21b6','#ede9fe'];
+const PURPLE  = '#C5973D';
+const SOFT    = '#E8C47A';
+const COLORS  = ['#C5973D','#E8C47A','#D4A855','#B8820A','#8B6120','#F5E6C3','#D4AA60','#9A7028','#FDF4E3'];
 
 function fmtDate(iso) {
   return new Date(iso).toLocaleString('en-IN', {
