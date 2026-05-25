@@ -6,12 +6,11 @@ import { useAuth } from '../../context/AuthContext';
 import { GoogleLogoSVG } from '../icons';
 
 const ORDER_FEATURES = [
-  'Over 72 exclusive NPL pad album designs',
-  'Luxury wood, gold hardware & leather finishes',
-  'LED & suitcase combo packages available',
-  'Custom text, names and dates embossed',
-  'Quick turnaround — 5 to 10 working days',
-  'Upload your photos directly from your device',
+  { icon: '📖', title: '72+ Exclusive Designs', desc: 'NPL pad albums for weddings, receptions & engagements' },
+  { icon: '🪵', title: 'Luxury Finishes', desc: 'Premium wood, gold hardware & leather covers' },
+  { icon: '💡', title: 'LED & Combo Packages', desc: 'LED video boxes, suitcase sets & more' },
+  { icon: '✍️', title: 'Custom Embossing', desc: 'Names, dates & personal text on every piece' },
+  { icon: '⚡', title: 'Fast Turnaround', desc: 'Ready in 5–10 working days with careful packaging' },
 ];
 
 const STORAGE_KEY = 'pdl_my_orders';
@@ -127,15 +126,26 @@ export default function OrderSection({ onViewOrders }) {
       <section className="order-section" id="order">
         {/* Left panel */}
         <div className="order-left">
+          <div className="order-left-badge">✦ New Prince Digilab · Mysuru</div>
           <div className="sec-label">Book Your Order</div>
           <h2 className="sec-title">Preserve Your <em>Moments</em></h2>
           <p className="sec-sub">
-            Visit us in Mysuru or fill the form and we'll help you pick the perfect design.
+            Visit us in Mysuru or fill the form — we'll craft something truly special for your cherished memories.
           </p>
           <div className="order-features">
-            {ORDER_FEATURES.map(f => (
-              <div key={f} className="order-feat">{f}</div>
+            {ORDER_FEATURES.map((f, i) => (
+              <div key={i} className="order-feat">
+                <div className="order-feat-icon">{f.icon}</div>
+                <div className="order-feat-body">
+                  <div className="order-feat-title">{f.title}</div>
+                  <div className="order-feat-desc">{f.desc}</div>
+                </div>
+              </div>
             ))}
+          </div>
+          <div className="order-trust">
+            <span className="order-trust-stars">★★★★★</span>
+            <span>Trusted by 5,000+ happy customers across Mysuru</span>
           </div>
         </div>
 
