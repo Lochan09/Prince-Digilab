@@ -13,13 +13,13 @@ export default function Hero({ onGoToSection }) {
       </div>
 
       <div className="hero-content">
-        <div className="hero-eyebrow">Mysuru's Premier Photo Lab</div>
+        <div className="hero-eyebrow">Mysuru's Premier Photo Lab — Since 2009</div>
         <h1 className="hero-title">
-          Memories Crafted in <em>Timeless</em> Style
+          New Prince Digilab <em>Mysore</em>
         </h1>
         <p className="hero-desc">
-          We create bespoke photo albums, suitcase packages, LED combo boxes and
-          digital keepsakes for weddings and celebrations.
+          Premium photo printing, wedding albums, LED combo boxes and suitcase
+          packages — proudly serving Mysuru &amp; Karnataka for over 15 years.
         </p>
         <div className="hero-actions">
           <a className="btn-primary" href="#catalog" onClick={() => onGoToSection('#catalog')}>
