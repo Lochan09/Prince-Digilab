@@ -225,6 +225,9 @@ footer{background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple) 100
 .order-detail-row a:hover{text-decoration:underline;}
 .order-status-badge{background:var(--purple-soft);color:var(--purple);font-size:0.72rem;font-weight:700;padding:0.2rem 0.7rem;border-radius:20px;letter-spacing:0.04em;}
 .order-helpline{text-align:center;margin-top:2rem;font-size:0.78rem;color:var(--text-muted);}
+.order-drive-btn{display:flex;align-items:center;gap:0.55rem;margin-top:0.9rem;padding:0.7rem 1.2rem;background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:#fff;text-decoration:none;border-radius:8px;font-family:'Raleway',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.04em;transition:opacity 0.2s,box-shadow 0.2s;box-shadow:0 3px 12px var(--shadow-strong);width:fit-content;}
+.order-drive-btn:hover{opacity:0.88;box-shadow:0 5px 18px var(--shadow-strong);}
+.order-drive-btn svg{width:16px;height:16px;flex-shrink:0;}
 @media(max-width:768px){.myorders-wrap{padding:5rem 1.2rem 3rem;}}
 
 /* â”€â”€ HAMBURGER BUTTON â”€â”€ */

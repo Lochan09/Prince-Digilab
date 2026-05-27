@@ -35,17 +35,18 @@ function OrderCard({ order, expanded, onToggle }) {
           {order.designCode  && <Row label="Design Code" value={order.designCode} />}
           {order.customText  && <Row label="Custom Text" value={order.customText} />}
           {order.notes       && <Row label="Notes"       value={order.notes} />}
-          {order.photoCount > 0 && <Row label="Photos" value={`${order.photoCount} uploaded`} />}
-          {order.driveFolderUrl && (
-            <div className="order-detail-row">
-              <span>Photos</span>
-              <a href={order.driveFolderUrl} target="_blank" rel="noopener noreferrer">View in Drive →</a>
-            </div>
-          )}
           <div className="order-detail-row">
             <span>Status</span>
             <span className="order-status-badge">In Progress</span>
           </div>
+          {order.driveFolderUrl && (
+            <a className="order-drive-btn" href={order.driveFolderUrl} target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+              View {order.photoCount > 0 ? order.photoCount : ''} Uploaded Photo{order.photoCount !== 1 ? 's' : ''} →
+            </a>
+          )}
         </div>
       )}
     </div>
