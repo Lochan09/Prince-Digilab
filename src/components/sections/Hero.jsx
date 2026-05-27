@@ -13,7 +13,7 @@ export default function Hero({ onGoToSection }) {
       </div>
 
       <div className="hero-content">
-        <div className="hero-eyebrow">Mysuru's Premier Photo Lab — Since 2009</div>
+        <div className="hero-eyebrow">Mysuru's Premier Photo Lab — Since 2015</div>
         <h1 className="hero-title">
           New Prince Digilab <em>Mysore</em>
         </h1>
