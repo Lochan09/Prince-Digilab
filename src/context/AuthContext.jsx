@@ -7,22 +7,24 @@ import { auth, gProvider } from '../firebase';
 
 const Ctx = createContext(null);
 
-const IS_PROD = window.location.hostname !== 'localhost';
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(undefined); // undefined = loading, null = signed out
 
   useEffect(() => {
-    // Pick up redirect result if coming back from Google sign-in
     getRedirectResult(auth).catch(() => {});
     return onAuthStateChanged(auth, setUser);
   }, []);
 
-  function signIn() {
-    if (IS_PROD) {
-      return signInWithRedirect(auth, gProvider);
+  async function signIn() {
+    try {
+      await signInWithPopup(auth, gProvider);
+    } catch (err) {
+      // Popup was blocked by the browser — fall back to redirect
+      if (err?.code === 'auth/popup-blocked' || err?.code === 'auth/popup-closed-by-user') {
+        return signInWithRedirect(auth, gProvider);
+      }
+      throw err;
     }
-    return signInWithPopup(auth, gProvider);
   }
 
   return (

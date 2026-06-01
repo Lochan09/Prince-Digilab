@@ -346,6 +346,8 @@ footer{background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple) 100
 .upload-btn-row{display:flex;gap:0.6rem;margin-bottom:0.75rem;}
 .upload-pick-btn{display:flex;align-items:center;gap:0.5rem;flex:1;justify-content:center;background:var(--purple-soft);border:2px solid var(--border);border-radius:10px;padding:0.75rem 1rem;cursor:pointer;font-family:'Raleway',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text-dark);transition:all 0.22s;}
 .upload-pick-btn:hover{border-color:var(--purple);background:var(--purple-mid);color:var(--purple);}
+.upload-pick-btn--error{border-color:#e53e3e !important;background:#fff5f5 !important;}
+.upload-error{color:#e53e3e;font-size:0.75rem;margin-top:0.25rem;}
 .upload-pick-icon{font-size:1rem;line-height:1;}
 
 /* Selected file list */

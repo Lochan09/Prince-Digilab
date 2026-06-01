@@ -24,6 +24,8 @@ export default function OrderSection({ onViewOrders }) {
   const [selectedFiles,  setSelectedFiles]  = useState([]);
   const [loadedBytes, setLoadedBytes] = useState(0);
 
+  const [folderError,    setFolderError]    = useState(false);
+
   const { user, signIn } = useAuth();
   const folderInputRef = useRef(null);
 
@@ -49,6 +51,7 @@ export default function OrderSection({ onViewOrders }) {
       const existing = new Set(prev.map(f => f.name + f.size));
       return [...prev, ...incoming.filter(f => !existing.has(f.name + f.size))];
     });
+    setFolderError(false);
     e.target.value = '';
   }
 
@@ -58,6 +61,10 @@ export default function OrderSection({ onViewOrders }) {
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (!selectedFiles.length) {
+      setFolderError(true);
+      return;
+    }
     setSubmitting(true);
     setLoadedBytes(0);
 
@@ -196,7 +203,7 @@ export default function OrderSection({ onViewOrders }) {
             {/* Photo upload */}
             <div className="form-group">
               <div className="upload-section-label">
-                Photos <span>(optional — uploaded directly to our Drive)</span>
+                Photos * <span>(uploaded directly to our Drive)</span>
               </div>
 
               <input
@@ -210,11 +217,14 @@ export default function OrderSection({ onViewOrders }) {
               />
 
               <div className="upload-btn-row">
-                <button type="button" className="upload-pick-btn" onClick={() => folderInputRef.current?.click()}>
+                <button type="button" className={`upload-pick-btn${folderError ? ' upload-pick-btn--error' : ''}`} onClick={() => folderInputRef.current?.click()}>
                   <span className="upload-pick-icon">📁</span>
                   <span>Select Folder</span>
                 </button>
               </div>
+              {folderError && (
+                <div className="upload-error">Please select a folder with photos before submitting.</div>
+              )}
 
               {selectedFiles.length > 0 && (
                 <div className="upload-file-list">
