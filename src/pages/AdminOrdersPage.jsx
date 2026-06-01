@@ -4,10 +4,27 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, LineChart, Line, CartesianGrid,
 } from 'recharts';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
-const PURPLE  = '#6c3fc8';
-const SOFT    = '#a78bfa';
-const COLORS  = ['#6c3fc8','#a78bfa','#c4b5fd','#7c3aed','#4c1d95','#ddd6fe','#8b5cf6','#5b21b6','#ede9fe'];
+// ── Chart colour palette ─────────────────────────────────────────────────────────
+const CHART_COLORS = [
+  '#6c3fc8', // purple
+  '#0ea5e9', // sky blue
+  '#10b981', // emerald
+  '#f59e0b', // amber
+  '#ef4444', // red
+  '#8b5cf6', // violet
+  '#06b6d4', // cyan
+  '#f97316', // orange
+  '#ec4899', // pink
+  '#14b8a6', // teal
+];
+
+const DAILY_COLOR   = '#6c3fc8';
+const MONTHLY_COLOR = '#0ea5e9';
+const GRID_COLOR    = '#f1f5f9';
 
 function fmtDate(iso) {
   return new Date(iso).toLocaleString('en-IN', {
@@ -16,10 +33,10 @@ function fmtDate(iso) {
   });
 }
 
-function StatCard({ num, label, sub }) {
+function StatCard({ num, label, sub, color }) {
   return (
-    <div className="admin-stat-card">
-      <div className="admin-stat-num">{num}</div>
+    <div className="admin-stat-card" style={{ borderTop: `3px solid ${color || '#6c3fc8'}` }}>
+      <div className="admin-stat-num" style={{ color: color || '#6c3fc8' }}>{num}</div>
       <div className="admin-stat-label">{label}</div>
       {sub && <div className="admin-stat-sub">{sub}</div>}
     </div>
@@ -34,8 +51,8 @@ function Row({ label, value }) {
   );
 }
 
-// ── Data helpers ────────────────────────────────────────────────────────────────
-function buildDailyTrend(orders, days = 30) {
+// ── Data helpers ─────────────────────────────────────────────────────────────────
+function buildDailyTrend(orders, days = 14) {
   const map = {};
   const now = new Date();
   for (let i = days - 1; i >= 0; i--) {
@@ -95,7 +112,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     <div className="chart-tooltip">
       {label && <div className="chart-tooltip-label">{label}</div>}
       {payload.map((p, i) => (
-        <div key={i} style={{ color: p.color || PURPLE }}>
+        <div key={i} style={{ color: p.color || '#6c3fc8' }}>
           {p.name ? `${p.name}: ` : ''}{p.value} order{p.value !== 1 ? 's' : ''}
         </div>
       ))}
@@ -103,7 +120,83 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-// ── Dashboard tab ───────────────────────────────────────────────────────────────
+// ── Export helpers ───────────────────────────────────────────────────────────────
+function exportExcel(orders) {
+  const rows = orders.map(o => ({
+    'Order ID':       o.id || '',
+    'Date':           fmtDate(o.createdAt),
+    'Name':           o.name || '',
+    'Phone':          o.phone || '',
+    'Email':          o.email || '',
+    'Product':        o.productCategory || '',
+    'Album Size':     o.albumSize || '',
+    'Design Code':    o.designCode || '',
+    'Custom Text':    o.customText || '',
+    'Notes':          o.notes || '',
+    'Photos':         o.photoCount || 0,
+    'Drive Folder':   o.driveFolderUrl || '',
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [
+    { wch: 22 }, { wch: 22 }, { wch: 20 }, { wch: 14 },
+    { wch: 28 }, { wch: 24 }, { wch: 14 }, { wch: 12 },
+    { wch: 24 }, { wch: 30 }, { wch: 8  }, { wch: 40 },
+  ];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Orders');
+  XLSX.writeFile(wb, `prince-digilab-orders-${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+function exportPDF(orders) {
+  const doc = new jsPDF({ orientation: 'landscape' });
+
+  doc.setFontSize(16);
+  doc.setTextColor(108, 63, 200);
+  doc.text('New Prince Digilab — Orders Report', 14, 16);
+
+  doc.setFontSize(9);
+  doc.setTextColor(120, 120, 120);
+  doc.text(`Generated: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}  ·  Total orders: ${orders.length}`, 14, 23);
+
+  autoTable(doc, {
+    startY: 28,
+    head: [['Order ID', 'Date', 'Name', 'Phone', 'Product', 'Album Size', 'Design', 'Photos']],
+    body: orders.map(o => [
+      o.id || '',
+      fmtDate(o.createdAt),
+      o.name || '',
+      o.phone || '',
+      o.productCategory || '',
+      o.albumSize || '',
+      o.designCode || '',
+      o.photoCount || 0,
+    ]),
+    headStyles: {
+      fillColor: [108, 63, 200],
+      textColor: 255,
+      fontSize: 8,
+      fontStyle: 'bold',
+    },
+    bodyStyles: { fontSize: 7.5, textColor: 50 },
+    alternateRowStyles: { fillColor: [245, 243, 255] },
+    columnStyles: {
+      0: { cellWidth: 36 },
+      1: { cellWidth: 38 },
+      2: { cellWidth: 28 },
+      3: { cellWidth: 26 },
+      4: { cellWidth: 38 },
+      5: { cellWidth: 24 },
+      6: { cellWidth: 20 },
+      7: { cellWidth: 16 },
+    },
+    margin: { left: 14, right: 14 },
+  });
+
+  doc.save(`prince-digilab-orders-${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+// ── Dashboard tab ─────────────────────────────────────────────────────────────────
 function Dashboard({ orders }) {
   const now      = new Date();
   const today    = now.toDateString();
@@ -123,10 +216,10 @@ function Dashboard({ orders }) {
     <div className="dashboard-wrap">
       {/* Stat cards */}
       <div className="admin-stats admin-stats--4">
-        <StatCard num={orders.length} label="Total Orders" />
-        <StatCard num={monthCount}    label="This Month" />
-        <StatCard num={weekCount}     label="This Week" />
-        <StatCard num={todayCount}    label="Today" />
+        <StatCard num={orders.length} label="Total Orders"  color="#6c3fc8" />
+        <StatCard num={monthCount}    label="This Month"    color="#0ea5e9" />
+        <StatCard num={weekCount}     label="This Week"     color="#10b981" />
+        <StatCard num={todayCount}    label="Today"         color="#f59e0b" />
       </div>
 
       {/* Daily trend */}
@@ -134,26 +227,31 @@ function Dashboard({ orders }) {
         <div className="chart-card-title">Orders — Last 14 Days</div>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={daily} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#ede9fe" />
+            <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
             <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#888' }} interval="preserveStartEnd" />
             <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: '#888' }} />
             <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="count" fill={PURPLE} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="count" fill={DAILY_COLOR} radius={[4, 4, 0, 0]}>
+              {daily.map((_, i) => (
+                <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Monthly + product charts side by side */}
+      {/* Monthly + pie side by side */}
       <div className="chart-row">
         <div className="chart-card">
           <div className="chart-card-title">Monthly Trend (6 months)</div>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={monthly} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ede9fe" />
+              <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#888' }} />
               <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: '#888' }} />
               <Tooltip content={<CustomTooltip />} />
-              <Line type="monotone" dataKey="orders" stroke={PURPLE} strokeWidth={2.5} dot={{ r: 4, fill: PURPLE }} />
+              <Line type="monotone" dataKey="orders" stroke={MONTHLY_COLOR} strokeWidth={2.5}
+                dot={{ r: 4, fill: MONTHLY_COLOR }} activeDot={{ r: 6 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -165,7 +263,7 @@ function Dashboard({ orders }) {
               <PieChart>
                 <Pie data={sizes} dataKey="value" nameKey="name" cx="50%" cy="50%"
                   outerRadius={75} innerRadius={35} paddingAngle={3}>
-                  {sizes.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                  {sizes.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
                 </Pie>
                 <Tooltip formatter={(v, n) => [`${v} orders`, n]} />
                 <Legend iconType="circle" iconSize={8}
@@ -183,13 +281,12 @@ function Dashboard({ orders }) {
           <ResponsiveContainer width="100%" height={Math.max(180, products.length * 40)}>
             <BarChart data={products} layout="vertical"
               margin={{ top: 4, right: 24, left: 8, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ede9fe" horizontal={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} horizontal={false} />
               <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10, fill: '#888' }} />
-              <YAxis type="category" dataKey="name" width={150}
-                tick={{ fontSize: 10, fill: '#555' }} />
+              <YAxis type="category" dataKey="name" width={150} tick={{ fontSize: 10, fill: '#555' }} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" fill={SOFT} radius={[0, 4, 4, 0]}>
-                {products.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+              <Bar dataKey="count" radius={[0, 4, 4, 0]}>
+                {products.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -199,7 +296,7 @@ function Dashboard({ orders }) {
   );
 }
 
-// ── All Orders tab ──────────────────────────────────────────────────────────────
+// ── All Orders tab ────────────────────────────────────────────────────────────────
 function AllOrders({ orders }) {
   const [expanded, setExpanded] = useState(null);
   const [search,   setSearch]   = useState('');
@@ -217,9 +314,26 @@ function AllOrders({ orders }) {
 
   return (
     <>
-      <input className="admin-search" type="text" value={search}
-        onChange={e => setSearch(e.target.value)}
-        placeholder="Search by name, email, phone, product or order ID…" />
+      <div className="admin-orders-toolbar">
+        <input className="admin-search" type="text" value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Search by name, email, phone, product or order ID…" />
+
+        <div className="admin-export-btns">
+          <button className="admin-export-btn admin-export-btn--excel"
+            onClick={() => exportExcel(filtered)}
+            disabled={filtered.length === 0}
+            title="Export to Excel">
+            <span>⬇</span> Excel
+          </button>
+          <button className="admin-export-btn admin-export-btn--pdf"
+            onClick={() => exportPDF(filtered)}
+            disabled={filtered.length === 0}
+            title="Export to PDF">
+            <span>⬇</span> PDF
+          </button>
+        </div>
+      </div>
 
       {filtered.length === 0 && (
         <div className="order-empty">{search ? 'No orders match your search.' : 'No orders yet.'}</div>
@@ -268,7 +382,7 @@ function AllOrders({ orders }) {
   );
 }
 
-// ── Main page ───────────────────────────────────────────────────────────────────
+// ── Main page ─────────────────────────────────────────────────────────────────────
 export default function AdminOrdersPage({ onBack }) {
   const { user } = useAuth();
   const [orders,   setOrders]   = useState([]);
@@ -298,7 +412,6 @@ export default function AdminOrdersPage({ onBack }) {
         <div className="sec-label" style={{ marginTop: '1.5rem' }}>Owner Dashboard</div>
         <h1 className="sec-title">Monitor <em>Orders</em></h1>
 
-        {/* Tab switcher */}
         <div className="admin-tabs">
           <button className={`admin-tab${tab === 'dashboard' ? ' active' : ''}`}
             onClick={() => setTab('dashboard')}>Dashboard</button>

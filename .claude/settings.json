@@ -3,7 +3,8 @@
     "allow": [
       "WebFetch(domain:4k-digital-press.netlify.app)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5174/)",
-      "Bash(git revert *)"
+      "Bash(git revert *)",
+      "Bash(grep -E \"\\\\.js$|\\\\.ts$|server|backend|api\")"
     ]
   }
 }

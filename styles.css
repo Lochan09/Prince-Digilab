@@ -822,11 +822,19 @@ footer{background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple) 100
 
 /* ── ADMIN / MONITOR ORDERS ── */
 .admin-stats{display:flex;gap:1rem;margin:1.5rem 0;}
-.admin-stat-card{flex:1;background:var(--purple-soft);border:1.5px solid var(--border);border-radius:12px;padding:1.2rem 1.5rem;text-align:center;}
-.admin-stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--purple);}
+.admin-stat-card{flex:1;background:#fff;border:1.5px solid var(--border);border-top-width:3px;border-radius:12px;padding:1.2rem 1.5rem;text-align:center;box-shadow:0 2px 8px var(--shadow);}
+.admin-stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;}
 .admin-stat-label{font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-top:0.25rem;}
+.admin-orders-toolbar{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.25rem;}
+.admin-orders-toolbar .admin-search{margin-bottom:0;flex:1;}
 .admin-search{width:100%;padding:0.75rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-family:'Raleway',sans-serif;font-size:0.88rem;color:var(--text-dark);background:#fff;box-sizing:border-box;margin-bottom:0.5rem;}
 .admin-search:focus{outline:none;border-color:var(--purple);}
+.admin-export-btns{display:flex;gap:0.5rem;flex-shrink:0;}
+.admin-export-btn{display:inline-flex;align-items:center;gap:0.35rem;padding:0.6rem 1rem;border:none;border-radius:8px;font-family:'Raleway',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;transition:opacity 0.2s,transform 0.15s;white-space:nowrap;}
+.admin-export-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.admin-export-btn:not(:disabled):hover{opacity:0.88;transform:translateY(-1px);}
+.admin-export-btn--excel{background:#217346;color:#fff;}
+.admin-export-btn--pdf{background:#e53e3e;color:#fff;}
 .nav-admin-link{color:var(--purple) !important;font-weight:800 !important;}
 .myorders-signin-prompt{text-align:center;padding:3rem 1rem;color:var(--text-body);}
 .myorders-user-row{display:flex;align-items:center;gap:0.75rem;margin:1rem 0;font-size:0.88rem;color:var(--text-muted);}
