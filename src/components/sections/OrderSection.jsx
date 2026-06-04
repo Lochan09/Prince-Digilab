@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { flushSync } from 'react-dom';
 import SuccessModal from '../ui/SuccessModal';
-import { EMPTY_FORM, ALBUM_SIZES, PRODUCT_CATEGORIES } from '../../data/constants';
+import { EMPTY_FORM, ALBUM_SIZES, PRODUCT_CATEGORIES, WHATSAPP_URL } from '../../data/constants';
 import { useAuth } from '../../context/AuthContext';
 import { GoogleLogoSVG } from '../icons';
 
@@ -20,8 +20,6 @@ const ORDER_STEPS = [
   { num: '03', label: 'We Design & Confirm', desc: 'Our team contacts you within 24 hours to finalise layout and embossing details.' },
   { num: '04', label: 'Quick Delivery', desc: 'Your custom album is crafted and delivered in 5–10 working days.' },
 ];
-
-const WA_URL = 'https://wa.me/918214264066';
 
 const STORAGE_KEY = 'pdl_my_orders';
 
@@ -319,7 +317,7 @@ export default function OrderSection({ onViewOrders }) {
 
             <div className="form-wa-cta">
               <span>Have questions?</span>
-              <a href={WA_URL} target="_blank" rel="noopener noreferrer" className="form-wa-link">
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="form-wa-link">
                 Chat on WhatsApp
               </a>
             </div>

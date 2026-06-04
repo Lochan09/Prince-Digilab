@@ -1,7 +1,7 @@
 import { GoogleLogoSVG, WhatsAppSVG, InstagramSVG, OrderBagSVG } from './icons';
+import { WHATSAPP_URL } from '../data/constants';
 
 const GOOGLE_MAPS_URL  = 'https://www.google.com/maps/search/New+Prince+Digilab+Mysuru';
-const WHATSAPP_URL     = 'https://wa.me/918214264066';
 const INSTAGRAM_URL    = 'https://www.instagram.com/prince_digilabmys';
 
 export default function FloatingButtons({ onOrderClick }) {

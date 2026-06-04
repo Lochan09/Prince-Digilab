@@ -1,4 +1,5 @@
 import { WhatsAppSVG, InstagramSVG, FacebookSVG, EmailSVG } from '../icons';
+import { WHATSAPP_URL } from '../../data/constants';
 
 const MAPS_EMBED = 'https://www.google.com/maps?q=New+Prince+Digilab+Mysuru+Karnataka&output=embed';
 
@@ -63,7 +64,7 @@ export default function ContactSection() {
             <a className="social-link facebook"  href="https://facebook.com/newprincedigilab"  target="_blank" rel="noopener noreferrer" title="Facebook">
               <FacebookSVG />
             </a>
-            <a className="social-link whatsapp"  href="https://wa.me/918214264066"             target="_blank" rel="noopener noreferrer" title="WhatsApp">
+            <a className="social-link whatsapp"  href={WHATSAPP_URL}                           target="_blank" rel="noopener noreferrer" title="WhatsApp">
               <WhatsAppSVG />
             </a>
             <a className="social-link email"     href="mailto:princedigilab@gmail.com"         title="Email">

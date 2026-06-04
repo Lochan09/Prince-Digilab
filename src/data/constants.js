@@ -1,3 +1,5 @@
+export const WHATSAPP_URL = 'https://wa.me/919886664066';
+
 export const HERO_SLIDES = Array.from({ length: 15 }, (_, i) => `/images/hero-slide-${i + 1}.jpg`);
 
 export const HERO_BG = [

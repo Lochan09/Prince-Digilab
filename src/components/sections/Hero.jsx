@@ -1,5 +1,5 @@
 import HeroSlider from '../ui/HeroSlider';
-import { HERO_BG, HERO_STATS } from '../../data/constants';
+import { HERO_BG, HERO_STATS, WHATSAPP_URL } from '../../data/constants';
 
 export default function Hero({ onGoToSection }) {
   return (
@@ -28,7 +28,7 @@ export default function Hero({ onGoToSection }) {
           <a className="btn-outline" href="#order" onClick={() => onGoToSection('#order')}>
             Place an Order
           </a>
-          <a className="btn-wa" href="https://wa.me/918214264066" target="_blank" rel="noopener noreferrer">
+          <a className="btn-wa" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
             Have Questions? Chat on WhatsApp
           </a>
         </div>
