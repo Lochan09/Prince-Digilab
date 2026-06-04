@@ -14,6 +14,15 @@ const ORDER_FEATURES = [
   'Upload your photos directly from your device',
 ];
 
+const ORDER_STEPS = [
+  { num: '01', label: 'Choose Design & Size', desc: 'Browse 72+ NPL pad designs in our catalog and pick your preferred album dimensions.' },
+  { num: '02', label: 'Upload Your Photos', desc: 'Select your photo folder and upload directly to our secure Google Drive.' },
+  { num: '03', label: 'We Design & Confirm', desc: 'Our team contacts you within 24 hours to finalise layout and embossing details.' },
+  { num: '04', label: 'Quick Delivery', desc: 'Your custom album is crafted and delivered in 5–10 working days.' },
+];
+
+const WA_URL = 'https://wa.me/918214264066';
+
 const STORAGE_KEY = 'pdl_my_orders';
 
 export default function OrderSection({ onViewOrders }) {
@@ -132,6 +141,21 @@ export default function OrderSection({ onViewOrders }) {
   return (
     <>
       <section className="order-section" id="order">
+
+        {/* How It Works — full-width steps banner */}
+        <div className="order-steps-banner">
+          <div className="order-steps-header">How It Works</div>
+          <div className="order-steps">
+            {ORDER_STEPS.map(step => (
+              <div key={step.num} className="order-step">
+                <div className="order-step-num">{step.num}</div>
+                <div className="order-step-label">{step.label}</div>
+                <div className="order-step-desc">{step.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Left panel */}
         <div className="order-left">
           <div className="sec-label">Book Your Order</div>
@@ -192,7 +216,7 @@ export default function OrderSection({ onViewOrders }) {
 
             <div className="form-group">
               <label>Names / Custom Text</label>
-              <input value={form.customText} onChange={field('customText')} type="text" placeholder="Adam & Eve — 14 Feb 2025" />
+              <input value={form.customText} onChange={field('customText')} type="text" placeholder="Priya & Arjun — 14 Feb 2026" />
             </div>
 
             <div className="form-group">
@@ -292,6 +316,13 @@ export default function OrderSection({ onViewOrders }) {
                 <GoogleLogoSVG /> Sign In to Place Order
               </button>
             )}
+
+            <div className="form-wa-cta">
+              <span>Have questions?</span>
+              <a href={WA_URL} target="_blank" rel="noopener noreferrer" className="form-wa-link">
+                Chat on WhatsApp
+              </a>
+            </div>
           </form>
         </div>
       </section>

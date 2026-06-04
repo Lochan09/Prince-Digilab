@@ -10,6 +10,7 @@ export default function Catalog({ onOpenLightbox }) {
       <h2 className="sec-title">Our <em>Collections</em></h2>
       <p className="sec-sub">
         Browse our handcrafted range of premium rexin, leather and wood products.
+        Click any image to view it full size.
       </p>
 
       <div className="catalog-tabs">
@@ -20,7 +21,8 @@ export default function Catalog({ onOpenLightbox }) {
             className={`tab-btn${activeTab === tab.id ? ' active' : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >
-            {tab.label}
+            <span className="tab-icon">{tab.icon}</span>
+            <span className="tab-label">{tab.label}</span>
             {tab.badge && <span className="tab-new-badge">New</span>}
           </button>
         ))}
@@ -35,7 +37,10 @@ export default function Catalog({ onOpenLightbox }) {
             style={!src ? { cursor: 'default' } : {}}
           >
             {src ? (
-              <img src={src} alt={label} loading="lazy" />
+              <>
+                <img src={src} alt={label} loading="lazy" />
+                <div className="sheet-zoom-hint">Click to enlarge</div>
+              </>
             ) : (
               <div style={{
                 minHeight: '200px', display: 'flex', flexDirection: 'column',

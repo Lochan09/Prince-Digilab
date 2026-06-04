@@ -28,6 +28,9 @@ export default function Hero({ onGoToSection }) {
           <a className="btn-outline" href="#order" onClick={() => onGoToSection('#order')}>
             Place an Order
           </a>
+          <a className="btn-wa" href="https://wa.me/918214264066" target="_blank" rel="noopener noreferrer">
+            Have Questions? Chat on WhatsApp
+          </a>
         </div>
         <div className="hero-stats">
           {HERO_STATS.map(s => (

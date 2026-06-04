@@ -35,11 +35,11 @@ export const CATALOG = {
 };
 
 export const CATALOG_TABS = [
-  { id: 'npl',       label: 'NPL Pad Albums' },
-  { id: 'luxury',    label: 'Luxury Combos' },
-  { id: 'led',       label: 'LED Boxes' },
-  { id: 'combo',     label: 'Special Combos',      badge: true },
-  { id: 'suitcase',  label: 'Suitcase Packages' },
-  { id: 'threefold', label: 'Three Fold & Pendrive' },
-  { id: 'minibooks', label: 'Mini Books',           badge: true },
+  { id: 'npl',       label: 'NPL Pad Albums',       icon: '📔' },
+  { id: 'luxury',    label: 'Luxury Combos',        icon: '✨' },
+  { id: 'led',       label: 'LED Boxes',            icon: '💡' },
+  { id: 'combo',     label: 'Special Combos',       icon: '📦', badge: true },
+  { id: 'suitcase',  label: 'Suitcase Packages',    icon: '🧳' },
+  { id: 'threefold', label: 'Three Fold & Pendrive',icon: '🖼️' },
+  { id: 'minibooks', label: 'Mini Books',            icon: '📗', badge: true },
 ];
