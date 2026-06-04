@@ -105,6 +105,11 @@ section.pad{padding:6rem 3rem;}
 
 /* â”€â”€ CATALOG â”€â”€ */
 .catalog-section{background:var(--white);}
+
+/* scroll-fade wrapper — inert on desktop, active on mobile via media query */
+.scroll-fade-wrap{position:relative;}
+.scroll-more-hint{display:none;}
+
 .catalog-tabs{display:flex;gap:0.65rem;flex-wrap:wrap;margin-bottom:2.5rem;}
 .tab-btn{font-family:'Raleway',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;padding:0.55rem 1.1rem;background:var(--off-white);border:1.5px solid var(--border);border-radius:50px;color:var(--text-muted);cursor:pointer;transition:all 0.25s;display:inline-flex;align-items:center;gap:0.45rem;}
 .tab-btn:hover{border-color:var(--purple-mid);color:var(--purple);background:var(--purple-soft);}
@@ -316,30 +321,75 @@ footer{background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple) 100
   .contact-grid{grid-template-columns:1fr;}
   footer{flex-direction:column;text-align:center;padding:2rem 1.2rem;}
 
-  .catalog-tabs{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;padding-bottom:4px;gap:0.5rem;}
-  .catalog-tabs::-webkit-scrollbar{height:3px;}
-  .catalog-tabs::-webkit-scrollbar-thumb{background:var(--purple-mid);border-radius:4px;}
+  /* --- tabs: horizontal scroll + right fade --- */
+  .catalog-tabs{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;padding-bottom:6px;gap:0.5rem;padding-right:3rem;}
+  .catalog-tabs::-webkit-scrollbar{height:0;}
 
-  /* horizontal scroll strip for catalog cards on mobile */
+  .tabs-scroll-wrap::after{
+    content:'';
+    position:absolute;
+    top:0;right:0;
+    width:56px;height:calc(100% - 6px);
+    background:linear-gradient(to right, transparent, #fff 80%);
+    pointer-events:none;
+    z-index:2;
+  }
+
+  /* --- sheet grid: horizontal scroll + right fade --- */
   .sheet-grid{
     display:flex;
     flex-wrap:nowrap;
     overflow-x:auto;
     gap:1rem;
-    padding-bottom:1rem;
-    padding-left:0.25rem;
-    padding-right:0.25rem;
+    padding-bottom:0.75rem;
+    padding-right:3rem;
     scroll-snap-type:x mandatory;
     -webkit-overflow-scrolling:touch;
   }
-  .sheet-grid::-webkit-scrollbar{height:4px;}
-  .sheet-grid::-webkit-scrollbar-track{background:var(--purple-soft);border-radius:4px;}
-  .sheet-grid::-webkit-scrollbar-thumb{background:var(--purple-mid);border-radius:4px;}
+  .sheet-grid::-webkit-scrollbar{height:0;}
   .sheet-card{
     min-width:78vw;
     max-width:320px;
     flex-shrink:0;
     scroll-snap-align:start;
+  }
+
+  .sheet-scroll-wrap::after{
+    content:'';
+    position:absolute;
+    top:0;right:0;
+    width:56px;height:calc(100% - 0.75rem);
+    background:linear-gradient(to right, transparent, #fff 80%);
+    pointer-events:none;
+    z-index:2;
+  }
+
+  /* --- swipe hint chip (shown on mobile) --- */
+  .scroll-more-hint{
+    display:block;
+    position:absolute;
+    top:50%;right:0;
+    transform:translateY(-50%);
+    font-family:'DM Mono',monospace;
+    font-size:0.55rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--purple);
+    background:var(--purple-soft);
+    border:1px solid var(--border);
+    padding:0.25rem 0.5rem;
+    border-radius:20px;
+    white-space:nowrap;
+    pointer-events:none;
+    z-index:3;
+    opacity:0.85;
+  }
+  /* for the sheet-scroll-wrap the hint sits at bottom-right of the strip */
+  .sheet-scroll-wrap .scroll-more-hint{
+    top:auto;
+    bottom:1.2rem;
+    right:0.25rem;
+    transform:none;
   }
 
   .services-grid{grid-template-columns:repeat(2,1fr);}

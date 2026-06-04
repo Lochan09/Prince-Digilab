@@ -13,22 +13,26 @@ export default function Catalog({ onOpenLightbox }) {
         Click any image to view it full size.
       </p>
 
-      <div className="catalog-tabs">
-        {CATALOG_TABS.map(tab => (
-          <button
-            key={tab.id}
-            type="button"
-            className={`tab-btn${activeTab === tab.id ? ' active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            <span className="tab-icon">{tab.icon}</span>
-            <span className="tab-label">{tab.label}</span>
-            {tab.badge && <span className="tab-new-badge">New</span>}
-          </button>
-        ))}
+      <div className="scroll-fade-wrap tabs-scroll-wrap">
+        <div className="catalog-tabs">
+          {CATALOG_TABS.map(tab => (
+            <button
+              key={tab.id}
+              type="button"
+              className={`tab-btn${activeTab === tab.id ? ' active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <span className="tab-icon">{tab.icon}</span>
+              <span className="tab-label">{tab.label}</span>
+              {tab.badge && <span className="tab-new-badge">New</span>}
+            </button>
+          ))}
+        </div>
+        <div className="scroll-more-hint" aria-hidden="true">swipe ›</div>
       </div>
 
-      <div className="sheet-grid">
+      <div className="scroll-fade-wrap sheet-scroll-wrap">
+        <div className="sheet-grid">
         {(CATALOG[activeTab] || []).map(([src, label], idx) => (
           <div
             key={label}
@@ -60,6 +64,8 @@ export default function Catalog({ onOpenLightbox }) {
             <div className="sheet-label">{label}</div>
           </div>
         ))}
+        </div>
+        <div className="scroll-more-hint" aria-hidden="true">swipe ›</div>
       </div>
     </section>
   );
