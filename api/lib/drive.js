@@ -2,14 +2,14 @@ const fs = require('fs');
 const { google } = require('googleapis');
 
 function oauthRedirectUri() {
-  return (
-    process.env.OAUTH_REDIRECT_URI ||
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}/auth/callback`
-      : process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}/auth/callback`
-        : 'http://localhost:3000/auth/callback')
-  );
+  if (process.env.OAUTH_REDIRECT_URI) return process.env.OAUTH_REDIRECT_URI;
+
+  const host =
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+    process.env.VERCEL_URL ||
+    'www.princedigilab.com';
+
+  return `https://${host.replace(/^www\./, 'www.')}/auth/callback`;
 }
 
 function makeOAuthClient() {

@@ -4,7 +4,7 @@
   "rewrites": [
     { "source": "/auth/setup", "destination": "/api/auth/setup" },
     { "source": "/auth/callback", "destination": "/api/auth/callback" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    { "source": "/((?!api/|auth/).*)", "destination": "/index.html" }
   ],
   "functions": {
     "api/orders/index.js": {
