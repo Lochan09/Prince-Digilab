@@ -2,6 +2,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
+    { "source": "/auth/setup", "destination": "/api/auth/setup" },
+    { "source": "/auth/callback", "destination": "/api/auth/callback" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "functions": {

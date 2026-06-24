@@ -10,6 +10,7 @@ async function handler(req, res) {
   }
 
   let tempFiles = [];
+  const warnings = [];
 
   try {
     const { fields, files } = await parseMultipart(req);
@@ -63,20 +64,40 @@ async function handler(req, res) {
       process.env.DRIVE_PARENT_FOLDER_ID &&
       loadRefreshToken()
     ) {
-      const folderName = `${order.id} — ${order.name} — ${order.phone}`;
-      driveFolderUrl = await uploadFilesToDrive(tempFiles, folderName);
-      order.driveFolderUrl = driveFolderUrl;
+      try {
+        const folderName = `${order.id} — ${order.name} — ${order.phone}`;
+        driveFolderUrl = await uploadFilesToDrive(tempFiles, folderName);
+        order.driveFolderUrl = driveFolderUrl;
+      } catch (err) {
+        console.error('Drive upload failed:', err.message);
+        warnings.push('Photos could not be uploaded to Drive. Please contact us with your order ID.');
+      }
+    } else if (tempFiles.length > 0) {
+      warnings.push('Photo upload is temporarily unavailable. We will contact you for your files.');
     }
 
-    await appendOrder(order);
+    try {
+      await appendOrder(order);
+    } catch (err) {
+      console.error('Order storage failed:', err.message);
+      warnings.push('Order history could not be saved. You will still receive confirmation by email.');
+    }
 
-    sendOrderEmail(order, driveFolderUrl).catch((err) => {
+    try {
+      await sendOrderEmail(order, driveFolderUrl);
+    } catch (err) {
       console.error('Email notification failed:', err.message);
-    });
+      return res.status(500).json({
+        error: 'Unable to send your order right now. Please call us directly.',
+      });
+    }
 
     return res.status(201).json({
       ok: true,
-      message: 'Order received successfully.',
+      message: warnings.length
+        ? 'Order received. Our team will follow up shortly.'
+        : 'Order received successfully.',
+      warnings: warnings.length ? warnings : undefined,
       orderId: order.id,
       order: {
         id: order.id,

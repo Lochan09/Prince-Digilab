@@ -1,15 +1,22 @@
 const fs = require('fs');
 const { google } = require('googleapis');
 
-function makeOAuthClient() {
-  const redirectUri =
+function oauthRedirectUri() {
+  return (
     process.env.OAUTH_REDIRECT_URI ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/auth/callback` : 'http://localhost:3000/auth/callback');
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}/auth/callback`
+      : process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}/auth/callback`
+        : 'http://localhost:3000/auth/callback')
+  );
+}
 
+function makeOAuthClient() {
   return new google.auth.OAuth2(
     process.env.OAUTH_CLIENT_ID,
     process.env.OAUTH_CLIENT_SECRET,
-    redirectUri
+    oauthRedirectUri()
   );
 }
 
@@ -20,6 +27,7 @@ function loadRefreshToken() {
 function getDriveClient() {
   const refreshToken = loadRefreshToken();
   if (!refreshToken) return null;
+  if (!process.env.OAUTH_CLIENT_ID || !process.env.OAUTH_CLIENT_SECRET) return null;
 
   const oauth2Client = makeOAuthClient();
   oauth2Client.setCredentials({ refresh_token: refreshToken });
@@ -59,8 +67,24 @@ async function uploadFilesToDrive(files, folderName) {
   return folder.webViewLink;
 }
 
+function generateAuthUrl() {
+  return makeOAuthClient().generateAuthUrl({
+    access_type: 'offline',
+    prompt: 'consent',
+    scope: ['https://www.googleapis.com/auth/drive'],
+  });
+}
+
+async function exchangeAuthCode(code) {
+  const { tokens } = await makeOAuthClient().getToken(code);
+  return tokens;
+}
+
 module.exports = {
   getDriveClient,
   loadRefreshToken,
   uploadFilesToDrive,
+  generateAuthUrl,
+  exchangeAuthCode,
+  oauthRedirectUri,
 };
